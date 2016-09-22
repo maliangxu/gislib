@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>web worker</title>
+</head>
+<body>
+	<input type="button" value="启动webworker" onclick="startWorker()">
+
+
+	<script>
+	  var myworker;
+   function startWorker(){
+    if(typeof(Worker)!=="undefined"){
+       if(typeof(myworker)=="undefined"){
+          myworker=new Worker("calculate.js");
+        }
+           //发送消息
+        myworker.postMessage(1000);
+         //接收消息
+         myworker.onmessage = function (event) {
+          alert(event.data);
+         };
+   }else{
+    alert("Sorry, your browser does not support Web Workers...");
+  }
+}
+	</script>
+</body>
+</html>

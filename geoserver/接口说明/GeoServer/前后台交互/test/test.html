@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>php+ajax演示示例</title>
+	<script src="js/jquery-1.7.min.js"></script>
+</head>
+<body>
+	<p>用户登录</p>
+	<label for="">用户名：</label><input type="text" name="usrname" id="name" ><br/>
+	<label for="">密 码：</label><input type="password" name="usrpass" id="password"><br/>
+	<input type="button" value="登陆" onclick="login2()">
+    <p id="info"></p>
+<script>
+var xhr;
+   //直接通过XMLHttpRequest请求
+	function login2(){
+		var name=document.getElementById('name').value;
+		var pass=document.getElementById('password').value;
+
+        var xhr=creatXhr();
+        xhr.open('GET','serv/login.php?usrname='+name+"&password="+pass,true);
+        xhr.send();
+        xhr.onreadystatechange=function(){
+        	if(xhr.readyState==4 && xhr.status==200){
+        		document.getElementById('info').innerHTML=xhr.responseText;
+        	}
+        };
+	}
+	//创建XMLHttpRequest 对象
+	function creatXhr(){
+		var xmlHttp=null;
+	  try { // Firefox, Opera 8.0+, Safari
+           xmlHttp=new XMLHttpRequest();
+         }
+       catch(e){  // Internet Explorer
+          try {
+           xmlHttp=new ActiveXObject("Msxml2.XMLHTTP"); // IE6 及更高的版本可用
+           }
+          catch(e) {
+          xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+          }
+      }
+      return xmlHttp;
+}
+
+       /*利用jquery，简化请求过程*/
+	function login(){
+		var name=document.getElementById('name').value;
+		var pass=document.getElementById('password').value;
+		var params={usrname:name,password:pass};
+		$.ajax({
+			url:'serv/login.php',
+			data:params,
+			type:'get',
+			success:function(msg){
+            document.getElementById('info').innerHTML=msg;
+			},
+			//dataType:'json',  //返回的数据类型
+			async:true
+		});
+	}
+   
+</script>
+</body>
+</html>

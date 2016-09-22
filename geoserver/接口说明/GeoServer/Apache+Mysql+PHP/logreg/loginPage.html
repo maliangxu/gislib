@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>注册、登陆界面</title>
+	<script src="js/jquery-1.7.min.js"></script>
+</head>
+<body>
+	<h2>用户注册</h2>
+	<table>
+		<tr>
+			<td><label for="">用户名：</label></td>
+			<td><input type="text" id="inputname"></td>
+			<!-- <td><span id="msgName">hello</span></td> -->
+		</tr>
+		<tr>
+			<td><label for="">密 码：</label></td>
+			<td><input type="password" id="inputpass"></td>
+			<!-- <td><span id="msgPass"></span></td> -->
+		</tr>
+		<tr>
+			<td><label for="">二次密码：</label></td>
+			<td><input type="password" id="inputpass2"></td>
+			<!-- <td><span id="msgPass2"></span></td> -->
+		</tr>
+	</table>
+	<input type="button" value="注册" onclick="register()"><br/>
+ 
+	<h2>用户登录</h2>
+	<table>
+		<tr>
+			<td><label for="">用户名：</label></td>
+			<td><input type="text" id="usrname" ></td>
+		</tr>
+		<tr>
+			<td><label for="">密 码：</label></td>
+			<td><input type="password" id="usrpass"></td>
+		</tr>
+	</table>
+	<input type="button" value="登陆" onclick="login()">
+
+
+	
+	<script>
+	function register(){
+		var name=document.getElementById('inputname').value;
+		var pass=document.getElementById('inputpass').value;
+		var repass=document.getElementById('inputpass2').value;
+
+		/*var msgName=document.getElementById('msgName');
+		var msgPass=document.getElementById('msgPass');
+		var msgPass2=document.getElementById('msgPass2');*/
+ 
+		//用户名检测
+		if(name==""){
+			alert("用户名不能为空！");
+			return;
+		}else if(/[^a-z]/gi.test(name)){
+			alert("用户名必须为英文字母！");
+			document.getElementById('inputname').value="";
+			return;
+		}
+		//密码检测
+		if(pass==""){
+			alert("密码不能为空！");
+			return;
+		}else if(pass.length<4){
+			alert("密码不能小于四位！");
+			return;
+		}
+		//二次密码
+		if (repass!=pass){
+		alert("两次输入的密码不一致！");
+		return;
+	   }
+	   var method="register";
+	   var params={method:method,usrname:name,password:pass};
+	   $.ajax({
+	   	url:'serv/action.php',
+	   	type:'GET',
+	   	data:params,
+	   	success:function(msg){
+            alert(msg);
+	   	},
+	   	async:true
+	   });
+	}
+	//登陆
+	function login(){
+		var name=document.getElementById('usrname').value;
+		var pass=document.getElementById('usrpass').value;
+	    var method="login";
+	    var params={method:method,usrname:name,password:pass};
+	    $.ajax({
+	   	url:'serv/action.php',
+	   	type:'GET',
+	   	data:params,
+	   	success:function(msg){
+            alert(msg);
+	   	},
+	   	async:true
+	   });
+
+	}
+
+	</script>
+</body>
+</html>

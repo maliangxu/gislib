@@ -1,0 +1,47 @@
+﻿administrator
+LiZh1969
+
+33153  163  183 173都是主机，其他是虚拟机
+
+beta 指向33152虚拟机
+
+
+
+1）mapbuilder 
+远程登录端口33183 ；帐号与其它机器相同
+geoserver程序的端口为86
+
+
+2）农委：
+远程登录端口33152 ；帐号与其它机器相同
+geoserver程序的端口为82
+
+3）
+新的主机远程登录端口33166 ；帐号与其它机器相同
+密码：ECNUlizh1969
+geoserver程序的端口为86
+访问形式：
+农委系统 http://webgis.ecnu.edu.cn/shapgis2/shaldapsys/
+
+2012年数据备份在此机器上
+
+
+4）33151端口： 
+geoserver程序的端口为85
+
+
+5）33164虚拟机  homepage
+发布路径为 d:\ecnu\webroot
+gConfig配置  webgis.ecnu.edu.cn  端口83
+
+
+6）
+
+
+
+
+路由ip  192.168.1.1
+
+
+
+

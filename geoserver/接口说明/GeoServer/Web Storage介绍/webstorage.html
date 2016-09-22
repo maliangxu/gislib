@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>web Storage</title>
+</head>
+<body>
+<input type="button" value="读取localstorage" onclick="read()">
+<input type="button" value="存储到localStorage" onclick="save()">
+
+	<script>
+	function read(){
+		if(window.localStorage){
+			var str=localStorage.getItem("name");
+			if(str){
+				alert("hello,"+str);
+		     }else{alert("localstorage中暂时没有存储信息");}
+		}else{
+			alert("抱歉，您的浏览器不支持localStorage");
+		}
+	}
+	function save(){
+		if(window.localStorage){
+			localStorage.setItem("name","webgis");
+		}else{
+			alert("抱歉，您的浏览器不支持localStorage");
+		}
+	}
+
+	</script>
+</body>
+</html>

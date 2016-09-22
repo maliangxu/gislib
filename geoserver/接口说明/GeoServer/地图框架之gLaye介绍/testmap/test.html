@@ -1,0 +1,261 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>test map</title>
+	<style>
+	body,html{
+		width:100%;
+		height:100%;
+		padding:0;
+		margin:0;
+	}
+	#map{  /*处于正中间*/
+		margin: auto; 
+		position: absolute;
+        top: 0px; 
+        left: 0px;
+        bottom: 0px; 
+        right: 0px;
+	}
+
+	</style>
+</head>
+<body>
+	
+
+	<div id="mapDiv" style="position:relative;width:100%;height:100%;border:1px solid red">
+		<div style="position:relative">
+		<input type="button" value="地图浏览" onclick="mapbrowser()">
+<!-- 	    <input type="button" value="添加图层" onclick="addLayer()">
+<input type="button" value="移除图层" onclick="removeLayer()"> -->
+	        <input type="checkbox"  id="riverlayer" onclick="setlayerVisible('River_A',this)">河流 
+         	<input type="checkbox" id="roadlayer" onclick="setlayerVisible('Road_Polygon_A',this)">道路面 
+         	<input type="checkbox" id="roadlinelayer" onclick="setlayerVisible('Road_Center_Line',this)">道路线
+
+
+	    <input type="button" value="添加要素" onclick="addpolygon()">
+	    <input type="button" value="添加标记" onclick="addmarker()">
+	    <input type="button" value="长度量算" onclick="measureLine()">
+	    <input type="button" value="面积量算" onclick="measureArea()">
+	    <input type="button" value="绘制要素" onclick="drawPolygon()">
+	   <!--  <input type="button" value="保存要素" onclick="savePolygon()"> -->
+	    <input type="button" value="加载谷歌地图" onclick="addOtherG()">
+	     <input type="button" value="移除谷歌地图" onclick="removeOther()">
+         <input type="button" value="加载百度地图" onclick="addOtherB()">
+	     <input type="button" value="移除百度地图" onclick="removeOtherB()">
+       </div>
+       <div id="tool" style="display:none;position:absolute;left:35%;top:10%;z-index:10000;color:white;background:rgba(0,14,12,0.7)">
+       	<span>透明度 0</span>
+       	<input id="opacityTool" type="range" value="10" min='1' max='10' onchange="changeOpacity()"> <span>100%</span>
+       </div>
+
+	    <div id="map" style="position:absolute;width:80%;height:80%;margin:auto;"></div>
+	</div>
+
+
+    <script src="http://webgis.ecnu.edu.cn/mapfile/map.js"></script> 
+  
+	<script>
+	var map=new gEcnu.Map('map');
+	var tileLayer=new gEcnu.Layer.Tile('tilelyr',{opacity:1});
+	map.addLayer(tileLayer);
+	var options = {'opacity': 0.8};
+	var dynlayer=new gEcnu.Layer.Dyn('shxz2008', 'dynlyr', 'quxianmian,zhenjiedaomian', options);
+	map.addLayer(dynlayer);
+	//添加地图控件
+	var zoomctr=new gEcnu.Control.Zoom('zoom');
+	map.addControl(zoomctr);
+	var scalectr=new gEcnu.Control.Scale('scale');
+	map.addControl(scalectr);
+    var rlayer;
+
+   function mapbrowser(){
+   	map.setMode('map');
+   	map.mapTool="pan";
+   }
+	//添加动态图层
+	function addLayer(){
+		var options = {'opacity': 0.8};
+		 rlayer=new gEcnu.Layer.Dyn('shxz2008', 'dynlyr', 'River_A', options);
+		map.addLayer(rlayer);
+	}
+	function removeLayer(){
+		map.removeLayer(rlayer);
+	}
+//图层控制
+  function setlayerVisible(str,obj){
+
+	switch(str){
+		case "River_A":
+		if(obj.checked){
+			dynlayer.addLyr("River_A");
+		}else{
+		    dynlayer.removeLyr("River_A");
+		}
+		break;
+		case "Road_Polygon_A":
+		if(obj.checked){
+			dynlayer.addLyr("Road_Polygon_A");
+		}else{
+		    dynlayer.removeLyr("Road_Polygon_A");
+		}
+		break;
+		case "Road_Center_Line":
+		if(obj.checked){
+			dynlayer.addLyr("Road_Center_Line");
+		}else{
+		    dynlayer.removeLyr("Road_Center_Line");
+		}
+		break;
+	}
+
+}
+	function addpolygon(){
+		var flayer=new gEcnu.Layer.Feature('flayer');
+		map.addLayer(flayer);
+		var ptarr=[
+			{
+            'ID': 1,
+            'x': 100,
+            'y': 100
+        }, {
+            'ID': 2,
+            'x': 2000,
+            'y': 2000
+        }, {
+            'ID': 3,
+            'x': 1500,
+            'y': 800
+        }];
+       
+        var feature=new gEcnu.Feature.Polygon('polygon','polygon1', ptarr, {'type':'tea'});
+		flayer.addFeature(feature);
+	}
+	//添加标记
+	function addmarker(){
+	var source="image/marker.png";
+    var params={src:source,x:500,y:500,offset:{x:-16,y:-32}};
+    var marker=new gEcnu.Marker("marker1",params); 
+    gSelf.mLayer.addMarker(marker); 
+	}
+	//量算长度
+	function measureLine(){
+		map.mapTool="rulerLength";
+	}
+	function measureArea(){
+		map.mapTool="rulerArea";
+	}
+
+	function drawPolygon(){
+		map.setMode('drawPolygon');
+		map.polygonArr=[];
+	}
+	//绘制要素
+	 map.mousedownCustom=function(e){ 
+	    var mxy = gEcnu.Util.getMouseXY(e); 
+	 	map.startX = mxy.x;
+        map.startY = mxy.y;
+	 	var wxy = gEcnu.Util.screenToWorld(map.startX, map.startY);
+	 	map.polygonArr.push(wxy); 
+	 	var ptArr=map.polygonArr;
+	 	var len=ptArr.length;
+	 	var ctx=map.overLayer.getCtx();
+	 
+	 	gEcnu.Graph.drawPoints(ctx, ptArr);
+	 	if(len>1){
+	 		gEcnu.Graph.drawLines(ctx, ptArr);
+	 	}
+	 };
+	 map.mousemoveCustom=function(e){
+	 	var ptArr=map.polygonArr;
+	 	var len=ptArr.length;
+	 	var curxy=gEcnu.Util.getMouseXY(e);
+	 	map.currentX=curxy.x;
+	 	map.currentY=curxy.y;
+	 	var ctx=map.overLayer.getCtx();
+	 	if(len>0){
+	 		 gSelf.overLayer.clear();
+	 		 gEcnu.Graph.drawLines(ctx, ptArr);
+	 		 gEcnu.Graph.drawPoints(ctx, ptArr);
+	 		 var screenXY=gEcnu.Util.worldToScreen(ptArr[len-1].x,ptArr[len-1].y);
+	 		 gEcnu.Graph.drawLine(ctx,screenXY,curxy); 
+	 		 if(len>1){
+	 		 	var screenXY=gEcnu.Util.worldToScreen(ptArr[0].x,ptArr[0].y); 
+	 		 	gEcnu.Graph.drawLine(ctx,screenXY,curxy);
+	 		 }
+	 	}
+
+	  };
+	 map.mousedblclickCustom=function(e){
+	 	map.polygonArr.pop();
+	 	var len=map.polygonArr.length;
+	 	if(len<3){
+	 		alert("绘制点少于三点");
+	 		return;
+	 	}
+	 	saveToLocal(map.polygonArr);
+	 	map.polygonArr=[];  //应该先保存再清空
+	  };
+	  function saveToLocal(arr){
+	  	var tmparr;
+	  	var poly=localStorage.getItem('polygon');
+	  	if(poly){
+	  		tmparr=JSON.parse(poly);  
+	  	}else{
+	  		tmparr=[];
+	  	}
+	  	tmparr.push(arr);
+	  	var json=JSON.stringify(tmparr,'\t'); 
+	  	localStorage['polygon']=json;
+	  }
+	
+	//加载第三方地图
+	var otherlyrG,otherlyrB;
+	function addOtherG(){
+		document.getElementById('tool').style.display="block";
+		var opacity=document.getElementById('opacityTool').value;
+		var options={'opacity':opacity};
+		otherlyrG=new gEcnu.Layer.Other('othermap', 'google', options);  //baidu
+		map.addLayer(otherlyrG);
+	}
+	function changeOpacity(){
+		var opacity=document.getElementById('opacityTool').value*0.1;
+		if(otherlyrG){
+		var otherMapDiv=otherlyrG.getLayerContainer();
+		otherMapDiv.style.opacity=opacity;
+		}
+		if(otherlyrB){
+		var otherMapDiv=otherlyrB.getLayerContainer();
+		otherMapDiv.style.opacity=opacity;
+		}
+		
+	 }  
+	 function removeOther(){
+	 	if(map.ownOther){
+	 		map.removeLayer(otherlyrG);
+	 	}
+	 	document.getElementById('tool').style.display="none";
+	 }
+//添加百度地图
+	function addOtherB(){
+		document.getElementById('tool').style.display="block";
+		var opacity=document.getElementById('opacityTool').value;
+		var options={'opacity':opacity};
+		otherlyrB=new gEcnu.Layer.Other('othermap', 'baidu', options);  //baidu
+		map.addLayer(otherlyrB);
+	}
+	
+	 function removeOtherB(){
+	 	if(map.ownOther){
+	 		map.removeLayer(otherlyrB);
+	 	}
+	 	document.getElementById('tool').style.display="none";
+	 }
+
+
+
+	</script>
+</body>
+</html>

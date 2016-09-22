@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>canvas api</title>
+</head>
+<body>
+	<h2>canvas绘图</h2>
+	<h4>基本图形绘制</h4>
+	<div>
+		<input type="button" value="绘制三角形" onclick="drawTra()">
+	<input type="button" value="绘制路径" onclick="drawRoute()" >
+	<input type="button" value="绘制矩形" onclick="drawRect()" >
+	<input type="button" value="绘制文本" onclick="drawText()" >
+	<input type="button" value="绘制渐变圆" onclick="drawCircle()">
+	<input type="button" value="绘制曲线" onclick="drawCurve()"> 
+    <input type="button" value="绘制贝塞尔曲线" onclick="drawTrdCurve()">
+    </div>
+   <input type="button" value="绘制五角星" onclick="draw5star()">
+   <input type="button" value="绘制复杂图形" onclick="drawComplex()">
+   <input type="button" value="坐标变换" onclick="transformGraph()">
+   <input type="button" value="绘制图像" onclick="drawImg()">
+   <input type="button" value="图像读取" onclick="readImage()">
+   <input type="button" value="简单动画" onclick="showFlash()">
+	<br/>
+	<canvas id="myCanvas" width="500" height="500"  style="border: 1px solid #ccc;"></canvas>
+	<img src="" alt="" id="imgContainer" crossorigin="anonymous"  /><br/>
+
+	<script>
+	var canvas=document.getElementById('myCanvas');
+	var ctx=canvas.getContext('2d');
+  function drawTra(){
+  	ctx.clearRect(0,0,500,500);
+  	ctx.beginPath();
+		ctx.moveTo(10,10);
+		ctx.lineTo(100,100);
+		ctx.lineTo(200,30);
+		ctx.strokeStyle="blue";
+		ctx.stroke();
+		ctx.closePath();  //绘制闭合线段
+
+          //ctx.beginPath();
+		ctx.moveTo(100,200);
+		ctx.lineTo(200,300);
+		ctx.lineTo(300,30);
+		ctx.strokeStyle="red";
+		//ctx.closePath();  //绘制闭合线段
+		ctx.stroke();
+  }
+	function drawRoute(){
+		ctx.clearRect(0,0,500,500);
+		ctx.beginPath();
+		ctx.moveTo(100,200);
+		ctx.lineTo(200,300);
+		ctx.lineTo(300,30);
+		ctx.strokeStyle="red";
+		//ctx.closePath();  //绘制闭合线段
+		ctx.stroke();
+	}
+	function drawRect(){
+		ctx.clearRect(0,0,500,500);
+		ctx.strokeStyle="red";
+		ctx.fillStyle="green";
+		ctx.strokeRect(50,50,100,100);
+		ctx.fillRect(180,50,250,100);
+		
+	}
+	function drawText(){
+	ctx.clearRect(0,0,500,500);
+	ctx.fillStyle="green";
+	ctx.strokeStyle="green";
+	ctx.font = "Bold 20px Arial";  // 设置字体
+    ctx.textAlign = "left";      
+    ctx.fillText("canvas 绘图",150,50);  
+	ctx.strokeText("canvas 绘图",150,80);
+	}
+
+
+	function drawCircle(){
+	ctx.clearRect(0,0,500,500);
+	var grad=ctx.createLinearGradient(10,10,400,300);
+	grad.addColorStop(0,'#FF0000');
+	grad.addColorStop(1,"#00FF00");
+	
+	ctx.beginPath();
+    ctx.fillStyle=grad;
+	ctx.arc(200,200,100,0,Math.PI*2,true);
+     ctx.fill();
+     ctx.closePath();
+     //绘制文本
+	ctx.font = "Bold 20px Arial";  // 设置字体
+    ctx.textAlign = "left";      
+    ctx.fillText("canvas 绘图",150,50);  
+	ctx.strokeText("canvas 绘图",150,80);
+	}
+	function drawCurve(){
+	ctx.clearRect(0,0,500,500);
+	 //绘制起始点、控制点、终点  
+          ctx.beginPath();  
+          ctx.moveTo(20,200);  
+          ctx.lineTo(130,40);  
+          ctx.lineTo(180,150);    
+          ctx.stroke();            
+          //绘制2次贝塞尔曲线  
+          ctx.beginPath();  
+          ctx.moveTo(20,200);  
+          ctx.quadraticCurveTo(130,40,180,150); 
+          ctx.strokeStyle = "red"; 
+          ctx.stroke();  
+	}
+	function drawTrdCurve(){
+		ctx.clearRect(0,0,500,500);     
+       //绘制起始点、控制点、终点  
+       ctx.beginPath();  
+       ctx.moveTo(25,175);  
+       ctx.lineTo(60,80);  
+       ctx.lineTo(150,30);  
+       ctx.lineTo(170,150); 
+       ctx.stroke();  
+
+       //绘制3次贝塞尔曲线        
+       ctx.beginPath();  
+       ctx.moveTo(25,175);  
+       ctx.bezierCurveTo(60,80,150,30,170,150);  
+       ctx.strokeStyle = "red";  
+       ctx.stroke();  
+	}
+
+	function draw5star(){
+		ctx.clearRect(0,0,500,500);
+		var x0=200;
+		var y0=200;
+		var r=100;
+		var angle=Math.PI*4/5;
+		ctx.beginPath();
+		ctx.fillStyle="green";
+		ctx.strokeStyle="red";
+		for(var i=0;i<5;i++){
+			var x=Math.sin(angle*i);
+			var y=Math.cos(angle*i);
+			ctx.lineTo(x0+r*x,y0+r*y);
+		}
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
+	}
+	 function drawComplex() {
+             ctx.clearRect(0,0,500,500);
+             ctx.fillStyle = "#EEEEFF";
+             ctx.fillRect(0, 0, 400, 300);
+             var n = 0;
+             var dx = 150;
+             var dy = 150;
+             var s = 100;
+             ctx.beginPath();
+             ctx.fillStyle = 'rgb(100,255,100)';
+             ctx.strokeStyle = 'rgb(0,0,100)';
+             var x = Math.sin(0);
+             var y = Math.cos(0);
+             var dig = Math.PI / 15 * 11;
+             for (var i = 0; i < 30; i++) {
+                 var x = Math.sin(i * dig);
+                 var y = Math.cos(i * dig);
+                 ctx.lineTo(dx + x * s, dy + y * s);
+             }
+             ctx.closePath();
+             ctx.fill();
+             ctx.stroke();
+ 
+         }
+    //坐标变换
+	function transformGraph(){
+		ctx.clearRect(0,0,500,500);
+		ctx.save(); //保存图形上下文的当前绘画状态
+		//进行变换操作，改变绘画状态
+		ctx.translate(200,100);
+		for(var i=0;i<20;i++){
+			ctx.translate(30,30);
+			ctx.scale(0.95,0.95);
+			ctx.rotate(Math.PI/10);
+
+			ctx.strokeStyle="green";
+			ctx.strokeRect(10,10,150,100);
+		}
+		ctx.restore();  //恢复图形的绘画状态   避免进行其他绘画时坐标转换的影响
+	}
+	function showFlash(){
+		var i=1;
+		setInterval(function(){
+			ctx.clearRect(0,0,500,500);
+			var grad=ctx.createLinearGradient(0,0,500,500);
+	        grad.addColorStop(0,'#FF0000');
+	        grad.addColorStop(1,"#00FF00");
+	
+	        ctx.beginPath();
+            ctx.fillStyle=grad;
+	        ctx.arc(i*10,i*10,10,0,Math.PI*2,true);
+            ctx.fill();
+            ctx.closePath();
+            i=i+1;
+		},200);
+	}
+	function drawImg(){
+		ctx.clearRect(0,0,500,500);
+		var image = new Image(); 
+        image.src = "image/school.jpg"; 
+        image.onload = function() { 
+       ctx.drawImage(image, 0, 0);
+       } 
+	}
+	//读取图像
+	function readImage(){
+		var img=document.getElementById('imgContainer');
+        img.src = canvas.toDataURL("image/jpg"); //在读取绘制的图片时，会出现跨域问题
+      
+	}
+
+	
+
+    
+    
+	</script>
+	
+</body>
+</html>
